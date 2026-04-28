@@ -35,6 +35,7 @@ static class FirstServlet extends HttpServlet {
 }
 ```
 
+```java
 // SUB3,4 - HTTP Client w/ Jetty
 public static void main(String[] args) {
   HttpClient client = new HttpClient();
@@ -51,3 +52,4 @@ public static void main(String[] args) {
 
   client.stop();
 }
+```
