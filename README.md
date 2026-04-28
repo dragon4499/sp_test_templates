@@ -1,7 +1,7 @@
 # sp_test_templates
 
 ```java
-// SUB3 - HTTP Server w/ Jetty
+// SUB3,4 - HTTP Server w/ Jetty
 public static void main(String[] args) {
   Server server = new Server(8080);
 
@@ -21,13 +21,33 @@ static class FirstServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) {
     // request
-    FirstRequest body = new Gson().fromJson(request.getReader(), FirstRequest.class);  // request body 파싱
+    FirstRequest bodyAsObject = new Gson().fromJson(request.getReader(), FirstRequest.class);  // request body 파싱 (to Object)
+    JsonObject bodyAsJson = JsonParser.parserReader(request.getReader());  // request body 파싱 (to Json)
 
     // response
-    response.getWriter().write(new Gson().toJson(new FirstResponse()));  // response body 작성
+    response.getWriter().write(new Gson().toJson(new FirstResponse()));  // response body 작성 (from Object)
+    response.getWriter().write(responseJson.toString());  // response body 작성 (from Json)
+
     response.setStatus(HttpServletResponse.SC_OK);
     response.setCharacterEncoding("UTF-8");
     response.setContentType("application/json");
   }
 }
 ```
+
+// SUB3,4 - HTTP Client w/ Jetty
+public static void main(String[] args) {
+  HttpClient client = new HttpClient();
+  client.start();
+
+  // Request 생성 (POST)
+  Request req = client.newRequest("http://127.0.0.1:8080/path").method(HttpMethod.POST);
+  req.header(HttpHeader.CONTENT_TYPE, "application/json");
+  req.content(new StringContentProvider("request body", "UTF-8");
+
+  // Response 파싱
+  ContentResponse res = request.send();
+  String response = res.getContentAsString();
+
+  client.stop();
+}
